@@ -8,7 +8,7 @@ Vue.use(Router)
 Vue.use(ElementUI)
 
 export default new Router({
-    routers:[
+    routes:[
         {
             path:'/',
             component:Login
