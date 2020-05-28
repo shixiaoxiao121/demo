@@ -34,6 +34,8 @@
 </div>
 </template>
 <script>
+    import router from "../router/router";
+
     export default {
         //单页面中不支持前面的data:{}方式
         data() {
@@ -46,15 +48,19 @@
                 //可是一般来说可能希望在不同的组件中引用的时候，使用不同的值，所以这里要用return
                 //这样在A组件和B组件分别引用这个变量的时候是不会互相影响的
                 user:{
-                    username:'zhangsan',
-                    password:'123',
-                    //为了登录方便，可以直接在这里写好用户名和密码的值
+                    username:'',
+                    password:'',
                 }
             }
         },
         methods:{
             doLogin(){//一点击登录按钮，这个方法就会执行
                 alert(JSON.stringify(this.user))//可以直接把this.user对象传给后端进行校验用户名和密码
+            },
+            toRegister(){
+                router.push({
+                    path:'register'
+                })
             }
         }
     }
