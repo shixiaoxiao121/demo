@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Login from '@/components/login'
 import ElementUI from "element-ui";
 import 'element-ui/lib/theme-chalk/index.css'
 
@@ -11,7 +10,12 @@ export default new Router({
     routes:[
         {
             path:'/',
-            component:Login
+            name:"login",
+            component: ()=>import('../components/login')
+        },
+        {
+            path: '/register',
+            component: ()=>import("../components/register")
         }
     ]
 })
