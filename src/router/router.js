@@ -10,7 +10,11 @@ export default new Router({
     routes:[
         {
             path:'/',
-            name:"login",
+            name:"index",
+            component: ()=>import('../components/index')
+        },
+        {
+            path:'/login',
             component: ()=>import('../components/login')
         },
         {

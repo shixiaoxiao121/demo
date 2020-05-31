@@ -1,39 +1,30 @@
 <template>
-    <div>
-        <!--flex弹性盒子模型，justify-content：主抽 -->
-        <div style="display: flex;justify-content: center;margin-top: 10%">
+    <div class="login_page">
+        <div style="display: flex;justify-content: center;padding-top: 10%">
             <el-card style="width: 350px">
-                <table>
-                    <tr style="height: 20px"></tr>
-                    <tr>
-                        <td>用户名</td>
-                        <td>
-                            <el-input placeholder="请输入用户名" v-model="user.username"></el-input>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>密码</td>
-                        <td>
-                            <el-input @keydown.enter.native="doLogin" placeholder="请输入密码" style="width: 250px"
-                                      type="password"
-                                      v-model="user.password"></el-input>
-                            <!-- @keydown.enter.native="doLogin"当按下enter键的时候也会执行doLogin方法-->
-                        </td>
-                    </tr>
-                    <tr>
-                        <!-- 占两行-->
-                        <td colspan="2">
-                            <!-- 点击事件的两种不同的写法v-on:click和 @click-->
-                            <!--<el-button style="width: 300px" type="primary" v-on:click="doLogin">登录</el-button>-->
-                            <el-button @click="doLogin" style="width: 300px" type="primary">登录</el-button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="right" colspan="2">
-                            <el-link :underline="false" @click="toRegister" type="primary">没有账号？注册</el-link>
-                        </td>
-                    </tr>
-                </table>
+                <div>
+                    <div style="margin-top: 8%"></div>
+                    <el-input placeholder="请输入手机号码" v-model="user.phone"></el-input>
+                    <div style="height: 20px"></div>
+                    <el-input placeholder="请输入密码" type="password" v-model="user.password"></el-input>
+                    <div style="height: 20px"></div>
+                    <div>
+                        <el-button @click="doLogin" class="button_register" style="width: 100%" type="primary">
+                            登录
+                        </el-button>
+                    </div>
+                    <div>
+                        <el-link :underline="false" @click="toRegister" type="primary">没有账号?注册</el-link>
+                        <el-link :underline="false" @click="toForgetPsw" style="float: right" type="primary">忘记密码
+                        </el-link>
+                    </div>
+                    <div align="right">
+
+                    </div>
+
+                </div>
+
+
             </el-card>
         </div>
     </div>
@@ -45,28 +36,42 @@
         //单页面中不支持前面的data:{}方式
         data() {
             //相当于以前的function data(){},这是es5之前的写法，新版本可以省略掉function
-            return{
+            return {
                 //之前是在里面直接写username，password等等，但是这里要写return
                 //因为一个组件不管要不要被其他组件用，只要这样定义了，它就会认为可能这个组件会在其他的组件中使用
                 //比如说在这里定义了一个变量，然后把这个组件引入到A组件中，A组件中修改了这个变量
                 //同时这个组件也在B组件中引用了，这时候A里面一修改，B里面也变了，它们用的是一个值
                 //可是一般来说可能希望在不同的组件中引用的时候，使用不同的值，所以这里要用return
                 //这样在A组件和B组件分别引用这个变量的时候是不会互相影响的
-                user:{
-                    username:'',
-                    password:'',
+                user: {
+                    phone: '',
+                    password: '',
                 }
             }
         },
-        methods:{
-            doLogin(){//一点击登录按钮，这个方法就会执行
-                alert(JSON.stringify(this.user))//可以直接把this.user对象传给后端进行校验用户名和密码
+        created() {
+            this.user.phone = localStorage.getItem("phone");
+            this.user.password = localStorage.getItem("psw");
+        },
+        methods: {
+            doLogin() {//一点击登录按钮，这个方法就会执行
+                //todo 调用后台登录api
+
             },
-            toRegister(){
+            toRegister() {
                 router.push({
-                    path:'register'
+                    path: 'register',
                 })
+            },
+            toForgetPsw() {
+
             }
         }
     }
 </script>
+<style lang="less" scoped>
+    .login_page{
+        height: 100%;
+        background-color: darkgray;
+    }
+</style>
