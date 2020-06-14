@@ -61,6 +61,18 @@
                 if (val.length === 0) {
                     this.errMsg.name_error_message = '请告诉我你的昵称吧';
                 } else {
+                    let params = {
+                        username: this.user.username,
+                    }
+                    this.$fetch(this.$onlineUrl.checkName, params)
+                        .then(res => {
+                            if (!res.success) {
+                                this.errMsg.name_error_message = res.message;
+                            }
+                        }).catch(err => {
+                        alert(err)
+                    })
+
                     this.errMsg.name_error_message = '';
                 }
             },
@@ -73,37 +85,51 @@
             }
         },
         methods: {
+
             sendCaptcha() {
                 if (!/^1[0-9]{10}$/.test(this.user.phone)) {
                     this.errMsg.phone_err_message = '手机号格式错误';
                     return;
                 }
-                //todo 发送验证码
+                //check phone
+                this.$fetch(this.$onlineUrl.checkPhone, {phone: this.user.phone})
+                    .then(res => {
+                        if (!res.data.success) {
+                            this.errMsg.phone_err_message = res.data.message;
+                        }
+                    }).catch(err => {
+                    alert(err)
+                })
+
                 if (!this.timer) {
                     this.count = TIME_OUT;
                     this.isDisabled = true;
                     this.timer = setInterval(() => {
                         if (this.count > 1 && this.count <= TIME_OUT) {
                             this.count--;
-                            this.content=this.count+"s";
+                            this.content = this.count + "s";
                         } else {
                             this.isDisabled = false;
-                            this.content='获取验证码';
+                            this.content = '获取验证码';
                             clearInterval(this.timer);
                             this.timer = null;
                         }
                     }, 1000)
                 }
-
+                //发送验证码
+                this.$fetch(this.$onlineUrl.verification, {phone: this.user.phone})
+                    .then(res => {
+                        if (res.success) {
+                            this.re_captcha = res.message;
+                            this.errMsg.phone_err_message = '';
+                        }
+                    }).catch(err => {
+                    alert(err)
+                })
 
                 this.isDisabled = true;
-
-                alert('abc');
-                this.re_captcha = 'abc';
-                this.errMsg.phone_err_message = '';
             },
             doRegister() {
-                //todo
                 if (this.captcha !== '' && this.captcha === this.re_captcha) {
                     if (this.user.username.length === 0) {
                         this.errMsg.name_error_message = '请告诉我你的昵称吧';
@@ -113,11 +139,27 @@
                     }
                     if (this.errMsg.name_error_message === '' && this.errMsg.psw_error_message === '' && this.errMsg.phone_err_message === '') {
                         //todo注册
-                        //todo注册成功跳转登录界面
-                        localStorage.setItem("phone", this.user.phone);
-                        localStorage.setItem("psw", this.user.password);
-                        router.push({
-                            path: 'login'
+                        let params = {
+                            username: this.user.username,
+                            phone: this.user.phone,
+                            password: this.user.password
+                        }
+
+                        this.$post(this.$onlineUrl.register, params)
+                            .then(res => {
+                                if (res.success) {
+                                    //注册成功跳转登录界面
+                                    localStorage.setItem("phone", this.user.phone);
+                                    localStorage.setItem("psw", this.user.password);
+                                    router.push({
+                                        path: 'login'
+                                    })
+                                }else {
+                                    alert(res.message)
+                                }
+
+                            }).catch(err => {
+                            alert(err)
                         })
                     }
                 } else {
