@@ -94,8 +94,19 @@
                 //check phone
                 this.$fetch(this.$onlineUrl.checkPhone, {phone: this.user.phone})
                     .then(res => {
-                        if (!res.data.success) {
-                            this.errMsg.phone_err_message = res.data.message;
+                        if (!res.success) {
+                            this.errMsg.phone_err_message = res.message;
+                        }else {
+                            //发送验证码
+                            this.$fetch(this.$onlineUrl.verification, {phone: this.user.phone})
+                                .then(res => {
+                                    if (res.success) {
+                                        this.re_captcha = res.message;
+                                        this.errMsg.phone_err_message = '';
+                                    }
+                                }).catch(err => {
+                                alert(err)
+                            })
                         }
                     }).catch(err => {
                     alert(err)
@@ -116,16 +127,7 @@
                         }
                     }, 1000)
                 }
-                //发送验证码
-                this.$fetch(this.$onlineUrl.verification, {phone: this.user.phone})
-                    .then(res => {
-                        if (res.success) {
-                            this.re_captcha = res.message;
-                            this.errMsg.phone_err_message = '';
-                        }
-                    }).catch(err => {
-                    alert(err)
-                })
+
 
                 this.isDisabled = true;
             },
